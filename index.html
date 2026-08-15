@@ -149,12 +149,10 @@
 <div class="screen" id="screen4">
   <div class="stage-title">Этап 4 из 11</div>
   <h1>Это мы 💋</h1>
-  <div class="photo-wrap">
-    <!-- Сюда вставь фото: сохрани картинку как photo.jpg рядом с файлом -->
-    <img id="couplePhoto" src="photo.jpg" alt="мы 💖"
-         onerror="this.style.display='none';document.getElementById('photoFallback').style.display='block';">
-    <div class="photo-fallback" id="photoFallback">🥰💋</div>
-  </div>
+<div class="photo-wrap">
+  <img id="couplePhoto" alt="мы 💖" style="display:none">
+  <div class="photo-fallback" id="photoFallback" style="display:block">🥰💋</div>
+</div>
   <p>Нажимай на фото — я буду целовать тебя ещё раз 💋</p>
   <div class="counter" id="kissCount">Поцелуев: 0</div>
   <button class="btn" onclick="goTo(5)">Дальше 💕</button>
@@ -376,6 +374,29 @@
     document.getElementById('hugMsg').textContent = hugMsgs[Math.min(hugs-1, hugMsgs.length-1)];
     burst(e.clientX || innerWidth/2, e.clientY || innerHeight/2, 10);
   }
+
+ // ---------- умная загрузка фото ----------
+(function(){
+  const names = ['photo.jpg', 'photo.jpeg', 'photo.png', 'photo.webp'];
+  const img = document.getElementById('couplePhoto');
+  const fb  = document.getElementById('photoFallback');
+  let i = 0;
+
+  img.addEventListener('load', () => {          // фото нашлось — показываем
+    img.style.display = 'block';
+    fb.style.display  = 'none';
+  });
+  img.addEventListener('error', next);          // не то имя — пробуем следующее
+  function next(){
+    if (i >= names.length){                     // ничего не подошло — заглушка
+      img.style.display = 'none';
+      fb.style.display  = 'block';
+      return;
+    }
+    img.src = names[i++] + '?v=' + Date.now();  // + защита от кэша браузера
+  }
+  next();
+})();
 </script>
 </body>
 </html>
